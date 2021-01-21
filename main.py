@@ -32,10 +32,13 @@ def main(img):
 
     contours, hierarchy = cv.findContours( segmented_mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )
     approx = []
+    contours = filter( lambda e: (cv.contourArea(e) / segmented_mask.size) > 0.1 , contours )
     for cnt in contours:
         approx.append( cv.convexHull(cnt) )
+        x,y,w,h = cv.boundingRect(cnt)
+        cv.rectangle(image,(x,y),(x+w,y+h),(0,255,0),2)
 
-    cv.drawContours(image, approx, -1, (0,255,0), 3)
+    #cv.drawContours(image, approx, -1, (0,255,0), 3)
     cv.imshow("contornos", image)
 
 
@@ -47,7 +50,7 @@ if __name__ == "__main__":
     if test:
         main("./P/image_0.jpg")
     else:
-        directory = "P"
+        directory = "N"
         files = [files for files in listdir( directory ) ]
         for image in files:
             img = f"./{directory}/{image}"
