@@ -7,12 +7,10 @@ import sys
 
 #Propias
 from constants import COLORS_RGB_SEGMENT
-from functions import show_space_colors, color_segmentation, histogram_equ
+from functions import show_space_colors, color_segmentation, histogram_equ, find_contours
 
 #Pruebas
 from os import listdir, rename
-
-
 
 def main(img):
     image = cv.imread( img )
@@ -30,17 +28,10 @@ def main(img):
     segmented_image = cv.bitwise_and( image, image, mask=segmented_mask )
     cv.imshow( "Imagen segmentada", segmented_image )
 
-    contours, hierarchy = cv.findContours( segmented_mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )
-    approx = []
-    contours = filter( lambda e: (cv.contourArea(e) / segmented_mask.size) > 0.1 , contours )
-    for cnt in contours:
-        approx.append( cv.convexHull(cnt) )
-        x,y,w,h = cv.boundingRect(cnt)
-        cv.rectangle(image,(x,y),(x+w,y+h),(0,255,0),2)
+    find_contours(segmented_mask, image, 0.01)
 
     #cv.drawContours(image, approx, -1, (0,255,0), 3)
     cv.imshow("contornos", image)
-
 
     cv.waitKey(0)
     cv.destroyAllWindows()

@@ -39,3 +39,12 @@ def histogram_equ(imag):
     cdf = np.ma.filled(cdf_m,0).astype('uint8')
     img2 = cdf[imag]
     plt.subplot(233),plt.imshow(img2),plt.title('Manzana Equalizada')
+
+def find_contours(mask, image, ratio):
+    contours, _ = cv.findContours( mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )
+    approx = []
+    contours = filter( lambda e: (cv.contourArea(e) / mask.size) > ratio , contours )
+    for cnt in contours:
+        approx.append( cv.convexHull(cnt) )
+        x,y,w,h = cv.boundingRect(cnt)
+        cv.rectangle(image,(x,y),(x+w,y+h),(0,0,255),2)
