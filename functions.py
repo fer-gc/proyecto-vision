@@ -21,12 +21,12 @@ def color_segmentation(image, space_color, show=False):
     mask = np.zeros( image_hsv.shape[0:2], dtype=np.uint8 )
     for color in COLORS_RGB_SEGMENT.keys():
         hsv = cv.cvtColor( np.uint8([[ COLORS_RGB_SEGMENT[color] ]]), cv.COLOR_RGB2HSV )[0][0]
-        lower = np.uint8( [hsv[0] if hsv[0]-10 > 0 else 0 - 10, 0, 0] )
-        upper = np.uint8( [hsv[0] + 10, 255, 255] )
+        lower = np.uint8( [hsv[0] if hsv[0]-20 > 0 else 0 - 10, 0, 0] )
+        upper = np.uint8( [hsv[0] + 20, 255, 255] )
         mask_ = np.array( cv.inRange( image_hsv, lower, upper) )
         mask = cv.bitwise_or( mask, mask_ )
         if show: cv.imshow( color, mask_ )
-    mask =  cv.morphologyEx(mask, cv.MORPH_CLOSE, cv.getStructuringElement(cv.MORPH_CROSS,(15,15)))
+    mask =  cv.morphologyEx(mask, cv.MORPH_CLOSE, cv.getStructuringElement(cv.MORPH_RECT,(5,5)) )
     if show: cv.imshow("Final mask", mask)
     return mask
 
