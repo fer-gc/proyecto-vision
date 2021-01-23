@@ -35,17 +35,17 @@ def main(img):
     rois = find_contours(segmented_mask, image, 0.01)
     cv.imshow("contornos", image)
 
-    #prd = cv.resize( image, (180, 180)  )
+    prd = cv.resize( image, (180, 180)  )
     #prd[:,:,3] = np.ones( (180, 180) )
-
-    print( "Prediccion:", model.predict( image ) )
+    prediction = model.predict( np.expand_dims(prd, axis=0) )
+    print( "Prediccion:", np.argmax(prediction) )
     cv.waitKey(0)
     cv.destroyAllWindows()
 
 if __name__ == "__main__":
-    test = True
+    test = False
     if test:
-        main("./P/image_5.png")
+        main("./P/image_2.jpg")
     else:
         directory = "N"
         files = [files for files in listdir( directory ) ]
