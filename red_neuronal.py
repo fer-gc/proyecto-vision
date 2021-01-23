@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
+import numpy as np
 
 #Parameters
 batch_size = 32
@@ -9,7 +10,7 @@ img_width = 180
 
 data_dir = "./images/training"
 
-if __name__ == "__main__":
+def main():
     train_ds = tf.keras.preprocessing.image_dataset_from_directory(
         data_dir,
         validation_split=0.2,
@@ -25,7 +26,6 @@ if __name__ == "__main__":
         seed=123,
         image_size=(img_height, img_width),
         batch_size=batch_size)
-
     class_names = train_ds.class_names
     normalization_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1./255)
     AUTOTUNE = tf.data.AUTOTUNE
@@ -85,5 +85,7 @@ if __name__ == "__main__":
     plt.title('Training and Validation Loss')
     plt.show()
 
-    predictions = model.predict(val_ds)
-    print( predictions[0] )
+    model.save( "./apple_classifier" )
+
+if __name__ == "__main__":
+    main()

@@ -3,7 +3,7 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
-#import tensorflow as tf
+from tensorflow import keras
 
 #Propias
 from constants import COLORS_RGB_SEGMENT
@@ -15,7 +15,11 @@ from os import listdir, rename
 def main(img):
     image = cv.imread( img )
     if image is None:
+        print("Imagen no encontrada, saliendo")
         sys.exit()
+
+    model = keras.models.load_model("apple_classifier")
+    print( model.summary() )
 
     cv.imshow("original", image)
 
@@ -28,18 +32,20 @@ def main(img):
     segmented_image = cv.bitwise_and( image, image, mask=segmented_mask )
     cv.imshow( "Imagen segmentada", segmented_image )
 
-    find_contours(segmented_mask, image, 0.01)
-
-    #cv.drawContours(image, approx, -1, (0,255,0), 3)
+    rois = find_contours(segmented_mask, image, 0.01)
     cv.imshow("contornos", image)
 
+    #prd = cv.resize( image, (180, 180)  )
+    #prd[:,:,3] = np.ones( (180, 180) )
+
+    print( "Prediccion:", model.predict( image ) )
     cv.waitKey(0)
     cv.destroyAllWindows()
 
 if __name__ == "__main__":
-    test = False
+    test = True
     if test:
-        main("./P/image_0.jpg")
+        main("./P/image_5.png")
     else:
         directory = "N"
         files = [files for files in listdir( directory ) ]

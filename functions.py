@@ -44,7 +44,11 @@ def find_contours(mask, image, ratio):
     contours, _ = cv.findContours( mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )
     approx = []
     contours = filter( lambda e: (cv.contourArea(e) / mask.size) > ratio , contours )
+    new_ROIs = []
     for cnt in contours:
         approx.append( cv.convexHull(cnt) )
         x,y,w,h = cv.boundingRect(cnt)
+        new_ROIs.append( ( x,y,w,h ) )
         cv.rectangle(image,(x,y),(x+w,y+h),(0,0,255),2)
+    #cv.drawContours(image, approx, -1, (0,255,0), 3)
+    return new_ROIs
